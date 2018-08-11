@@ -10,10 +10,12 @@ namespace Xentools
 {
     class Program
     {
-        const string GetHelp = 
+        const string GetHelp =
         @"
         connect [ip] [port]. Connect to XEN Server. ip - destination ip address, port - destination port
-        logout
+        connect [ip]. Connect to XEN Server. Port is default (443)
+        vmlist. Get list of virtual machines.
+        disconnect
         exit
         ";
         static void Main(string[] args)
@@ -35,7 +37,10 @@ namespace Xentools
                         string login, password;
                         try
                         {
-                            session = new Session(command.Split(' ')[1], int.Parse(command.Split(' ')[2]));
+                            if (command.Split(' ').Length > 2)
+                                session = new Session(command.Split(' ')[1], int.Parse(command.Split(' ')[2]));
+                            else
+                                session = new Session(command.Split(' ')[1], 443);
                         }
                         catch(Exception ex)
                         {
@@ -57,17 +62,35 @@ namespace Xentools
                         }
                         System.Console.WriteLine("Connected!");
                         break;
-                    case "logout":
+                    case "disconnect":
                         if (session != null)
                             try
                             {
                                 session.logout();
+                                session = null;
+                                System.Console.WriteLine("Disconnected");
                             }
                             catch (Exception ex)
                             {
                                 System.Console.WriteLine(ex.Message);
-                                break;
                             }
+                        else
+                            System.Console.WriteLine("Not connected");
+                        break;
+                    case "vmlist":
+                        if (session != null)
+                        {
+                            List<XenRef<VM>> vms = new List<XenRef<VM>>();
+                            vms = VM.get_all(session);
+                            for (int i = 0; i < vms.Count; i++)
+                            {
+                                VM a = VM.get_record(session, vms[i].opaque_ref);
+                                if (!a.is_a_snapshot && !a.is_a_template)
+                                    System.Console.WriteLine("{0}",i,a.name_label);
+                            }
+                        }
+                        else
+                            System.Console.WriteLine("Not connected");
                         break;
                     case "exit":
                         if (session != null)
