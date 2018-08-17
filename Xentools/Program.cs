@@ -16,6 +16,8 @@ namespace Xentools
         connect [ip]. Connect to XEN Server. Port is default (443)
         vmlist. Get list of virtual machines.
         snaplist. Get list of all snapshots.
+        vmstart. Start selected VM.
+        vmshutdown. Shutdown selected VM.
         disconnect
         exit
         ";
@@ -38,6 +40,64 @@ namespace Xentools
                 if (a.is_a_snapshot && snapshots) result.Add(a);
                 else if (a.is_a_template && templates) result.Add(a);
                 else if (!a.is_a_template && !a.is_a_snapshot) result.Add(a);
+            }
+            return result;
+        }
+
+        static XenRef<VM> SelectVM(Session session)
+        {
+            List<XenRef<VM>> list = VM.get_all(session);
+            VM a;
+            for (int i = 0; i < list.Count; i++)
+            {
+                a = VM.get_record(session, list[i].opaque_ref);
+                if (a.is_a_snapshot || a.is_a_template)
+                {
+                    list.RemoveAt(i);
+                    i--;
+                    continue;
+                }
+                System.Console.WriteLine("{0}   {1}", i, a.name_label);
+            }
+            System.Console.WriteLine("VM number: ");
+            int choise = 0;
+            try
+            {
+                choise = Convert.ToInt32(System.Console.ReadLine());
+            }
+            catch
+            {
+                //!!!
+            }
+            return list[choise];
+        }
+
+        static bool StartVM(Session session, XenRef<VM> vm)
+        {
+            bool result = true;
+            try
+            {
+                VM.start(session, vm, false, false);
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                result = false;
+            }
+            return result;
+        }
+
+        static bool ShutdownVM(Session session, XenRef<VM> vm)
+        {
+            bool result = true;
+            try
+            {
+                VM.shutdown(session, vm);
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                result = false;
             }
             return result;
         }
@@ -106,7 +166,7 @@ namespace Xentools
                         {
                             List<VM> vms = GetVMs(session);
                             foreach (var vm in vms)
-                                System.Console.WriteLine(vm.name_label);
+                                System.Console.WriteLine("{0} {1}", vm.name_label, vm.power_state);
                         }
                         else
                             System.Console.WriteLine("Not connected");
@@ -125,6 +185,22 @@ namespace Xentools
                                     System.Console.WriteLine("      {0}", snap.name_label);
                                 }
                             }
+                        }
+                        else
+                            System.Console.WriteLine("Not connected");
+                        break;
+                    case "vmstart":
+                        if (session != null)
+                        {
+                            System.Console.WriteLine(StartVM(session, SelectVM(session)));
+                        }
+                        else
+                            System.Console.WriteLine("Not connected");
+                        break;
+                    case "vmshutdown":
+                        if (session != null)
+                        {
+                            System.Console.WriteLine(ShutdownVM(session, SelectVM(session)));
                         }
                         else
                             System.Console.WriteLine("Not connected");
