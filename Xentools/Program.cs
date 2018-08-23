@@ -16,6 +16,8 @@ namespace Xentools
         connect [ip]. Connect to XEN Server. Port is default (443)
         vmlist. Get list of virtual machines.
         snaplist. Get list of all snapshots.
+        snapcreate. Create new snapshot.
+        snaprevert. Revert VM to previous snaphot.
         vmstart. Start selected VM.
         vmshutdown. Shutdown selected VM.
         disconnect
@@ -64,7 +66,25 @@ namespace Xentools
                     case "snaplist":
                         if (session != null)
                         {
-                            vmlist.PrintVMSnapshots();
+                            vmlist.PrintVM(true);
+                        }
+                        else
+                            System.Console.WriteLine("Not connected");
+                        break;
+                    case "snapcreate":
+                        if (session != null)
+                        {
+                            if (Snapshot.Create(session, vmlist.ChooseVM()))
+                                System.Console.WriteLine("Succesful.");
+                        }
+                        else
+                            System.Console.WriteLine("Not connected");
+                        break;
+                    case "snaprevert":
+                        if (session != null)
+                        {
+                            if (Snapshot.Revert(session, vmlist.ChooseVM()))
+                                System.Console.WriteLine("Succesful.");
                         }
                         else
                             System.Console.WriteLine("Not connected");

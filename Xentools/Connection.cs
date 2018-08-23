@@ -13,10 +13,10 @@ namespace Xentools
         {
             session = new Session(ip,port);
             string login, password;
-            System.Console.WriteLine("Login: ");
+            System.Console.Write("Login: ");
             login = System.Console.ReadLine();
-            System.Console.WriteLine("Password: ");
-            password = System.Console.ReadLine();
+            System.Console.Write("Password: ");
+            password = getPassword();
             try
             {
                 session.login_with_password(login, password);
@@ -44,6 +44,21 @@ namespace Xentools
                 }
             else return false;
             return true;
+        }
+
+        private static string getPassword()
+        {
+            string password = "";
+            while (true)
+            {
+                var key = System.Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Enter)
+                    break;
+                System.Console.Write("*");
+                password += key.KeyChar;
+            }
+            System.Console.WriteLine();
+            return password;
         }
     }
 }
