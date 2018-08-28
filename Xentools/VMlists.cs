@@ -40,7 +40,7 @@ namespace Xentools
                         List<XenRef<VM>> snapshots = a.snapshots;                       
                         for (int j = 0; j < snapshots.Count; j++)
                         {
-                            VM b = VM.get_record(session, snapshots[j].opaque_ref).con;
+                            VM b = VM.get_record(session, snapshots[j].opaque_ref);
                             System.Console.WriteLine("   {0}    {1}", j, b.name_label);                           
                         }
                     }
