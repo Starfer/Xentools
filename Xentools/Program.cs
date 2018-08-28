@@ -32,6 +32,22 @@ namespace Xentools
             VMlists vmlist = new VMlists();
             if (args.Count() > 0)
                 Connect.Connection(ref session, args[0]);
+#if DEBUG
+            try
+            {
+                System.IO.StreamReader reader = new System.IO.StreamReader("login_debug.txt");
+                string ip = reader.ReadLine();
+                string login = reader.ReadLine();
+                string password = reader.ReadLine();
+                reader.Close();
+                Connect.Connection(ref session, ip, login, password);
+                System.Console.WriteLine("Autoconnect successfull");
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine("Autoconnect failed! Error: {0}",ex.Message);
+            }
+#endif
             System.Console.WriteLine("Type \"help\" for a list of commands");
             while (true)
             {

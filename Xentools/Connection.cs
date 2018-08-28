@@ -28,6 +28,22 @@ namespace Xentools
             }
             return true;
         }
+
+        public static bool Connection(ref Session session, string ip, string login, string password, int port = 443)
+        {
+            session = new Session(ip, port);
+            try
+            {
+                session.login_with_password(login, password);
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                return false;
+            }
+            return true;
+        }
+
         public static bool Disconnection(Session session)
         {
             if (session != null)
