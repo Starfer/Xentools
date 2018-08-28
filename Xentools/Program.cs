@@ -31,7 +31,17 @@ namespace Xentools
             Session session = null;
             VMlists vmlist = new VMlists();
             if (args.Count() > 0)
-                Connect.Connection(ref session, args[0]);
+            {
+                try
+                {
+                    Connect.Connection(ref session, args[0]);
+                    vmlist = new VMlists(session);
+                }
+                catch (Exception ex)
+                {
+                    System.Console.WriteLine("Error: {0}", ex.Message);
+                }
+            } 
 #if DEBUG
             try
             {
@@ -40,12 +50,14 @@ namespace Xentools
                 string login = reader.ReadLine();
                 string password = reader.ReadLine();
                 reader.Close();
-                Connect.Connection(ref session, ip, login, password);
-                System.Console.WriteLine("Autoconnect successfull");
+                bool result = Connect.Connection(ref session, ip, login, password);
+                if (result)
+                    System.Console.WriteLine("Autoconnect successfull");
+                vmlist = new VMlists(session);
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine("Autoconnect failed! Error: {0}",ex.Message);
+                System.Console.WriteLine("Autoconnect failed. Error: {0}",ex.Message);
             }
 #endif
             System.Console.WriteLine("Type \"help\" for a list of commands");
