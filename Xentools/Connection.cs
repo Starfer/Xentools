@@ -46,7 +46,7 @@ namespace Xentools
             return true;
         }
 
-        private static string getPassword()
+        public static string getPassword()
         {
             string password = "";
             while (true)

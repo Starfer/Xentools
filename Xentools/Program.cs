@@ -105,6 +105,14 @@ namespace Xentools
                         else
                             System.Console.WriteLine("Not connected");
                         break;
+                    case "update":
+                        if (session != null)
+                        {
+                            Command.Update(session, vmlist.ChooseVM());
+                        }
+                        else
+                            System.Console.WriteLine("Not connected");
+                        break;
                     case "exit":
                         if (session != null)
                             session.logout();

@@ -49,6 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="OnOff.cs" />
     <Compile Include="Program.cs" />
