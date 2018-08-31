@@ -30,6 +30,8 @@ namespace Xentools
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
             Session session = null;
             VMlists vmlist = new VMlists();
+            if (args.Count() > 0)
+                Connect.Connection(ref session, args[0]);
             System.Console.WriteLine("Type \"help\" for a list of commands");
             while (true)
             {

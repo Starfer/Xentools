@@ -54,6 +54,12 @@ namespace Xentools
                 var key = System.Console.ReadKey(true);
                 if (key.Key == ConsoleKey.Enter)
                     break;
+                if (key.Key == ConsoleKey.Backspace)
+                {
+                    if (password.Length > 0)
+                        password = password.Remove(password.Length - 1);
+                    continue;
+                }
                 System.Console.Write("*");
                 password += key.KeyChar;
             }
