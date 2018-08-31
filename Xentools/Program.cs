@@ -20,6 +20,7 @@ namespace Xentools
         snaprevert. Revert VM to previous snaphot.
         vmstart. Start selected VM.
         vmshutdown. Shutdown selected VM.
+        update. Start Windows Update of selected VM.
         disconnect
         exit
         ";
